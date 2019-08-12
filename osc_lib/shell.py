@@ -19,6 +19,7 @@
 import getpass
 import locale
 import logging
+import socket
 import sys
 import traceback
 
@@ -41,6 +42,8 @@ from osc_lib import utils
 from osc_lib import version
 
 osprofiler_profiler = importutils.try_import("osprofiler.profiler")
+import osprofiler.initializer
+from oslo_config import cfg
 
 
 DEFAULT_DOMAIN = 'default'
@@ -89,6 +92,16 @@ class OpenStackShell(app.App):
             interactive_app_factory=None,
             deferred_help=False,
     ):
+        cfg.CONF.profiler.connection_string = 'redis://localhost:6379'
+        cfg.CONF.profiler.hmac_keys = 'Devstack1'
+        osprofiler.initializer.init_from_conf(
+            cfg.CONF,
+            {},  # supposed to be context
+            'osc_lib',
+            'openstackclient',
+            socket.gethostname()
+        )
+
         # Patch command.Command to add a default auth_required = True
         command.Command.auth_required = True
 
