@@ -146,7 +146,8 @@ class OpenStackShell(app.App):
         ret_val = 1
         self.command_options = argv
         try:
-            ret_val = super(OpenStackShell, self).run(argv)
+            ret_val = osprofiler_profiler.trace("run")(
+                super(OpenStackShell, self).run)(argv)
             return ret_val
         except Exception as e:
             if not logging.getLogger('').handlers:
@@ -186,7 +187,8 @@ class OpenStackShell(app.App):
     def run_subcommand(self, argv):
         self.init_profile()
         try:
-            ret_value = super(OpenStackShell, self).run_subcommand(argv)
+            ret_value = osprofiler_profiler.trace("run_subcommand")(
+                super(OpenStackShell, self).run_subcommand)(argv)
         finally:
             self.close_profile()
         return ret_value
@@ -194,7 +196,8 @@ class OpenStackShell(app.App):
     def interact(self):
         self.init_profile()
         try:
-            ret_value = super(OpenStackShell, self).interact()
+            ret_value = osprofiler_profiler.trace("interact")(
+                super(OpenStackShell, self).interact)()
         finally:
             self.close_profile()
         return ret_value
