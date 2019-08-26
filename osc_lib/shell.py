@@ -146,8 +146,7 @@ class OpenStackShell(app.App):
         ret_val = 1
         self.command_options = argv
         try:
-            ret_val = osprofiler_profiler.trace("run")(
-                super(OpenStackShell, self).run)(argv)
+            ret_val = super(OpenStackShell, self).run(argv)
             return ret_val
         except Exception as e:
             if not logging.getLogger('').handlers:
