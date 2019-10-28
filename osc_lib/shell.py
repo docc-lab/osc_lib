@@ -19,6 +19,7 @@
 import getpass
 import locale
 import logging
+import re
 import socket
 import sys
 import traceback
@@ -92,7 +93,12 @@ class OpenStackShell(app.App):
             interactive_app_factory=None,
             deferred_help=False,
     ):
-        cfg.CONF.profiler.connection_string = 'redis://localhost:6379'
+        with open('/etc/nova/nova.conf', 'r') as f:
+            regex = re.compile(r'connection_string = ([a-zA-Z0-9:/\.]+)')
+            for line in f:
+                res = regex.match(line)
+                if res:
+                    cfg.CONF.profiler.connection_string = res.group(1)
         cfg.CONF.profiler.hmac_keys = 'Devstack1'
         osprofiler.initializer.init_from_conf(
             cfg.CONF,
