@@ -188,6 +188,7 @@ class OpenStackShell(app.App):
                              "for OpenTracing-based drivers: %s" % short_id)
             self.log.warning("Display trace data with command:\n"
                              "osprofiler trace show --html %s " % trace_id)
+            profiler.notify_trace()
 
     def run_subcommand(self, argv):
         self.init_profile()
